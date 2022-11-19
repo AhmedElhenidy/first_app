@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "555098144864",
+    "project_id": "ex-24-730da",
+    "storage_bucket": "ex-24-730da.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:555098144864:android:2c365a306363b4d36e8305",
+        "android_client_info": {
+          "package_name": "com.app.nobel"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "555098144864-2qr3d8gh85blgpih6bu71m66lbt71srn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvoKdc5iN1oRwXs4Y4eOFwiKNhBQ-kaIs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "555098144864-2qr3d8gh85blgpih6bu71m66lbt71srn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
