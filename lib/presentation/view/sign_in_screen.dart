@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:nobel/domain/usecase/login_usecase.dart';
 import 'package:nobel/presentation/component/custom_password_text_filed.dart';
 import 'package:nobel/presentation/view/home_page_screen.dart';
 import 'package:nobel/presentation/view/sing_up_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../data/repository_implementation/auth_repository_implementation.dart';
 import '../component/custom_text_field.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -16,6 +18,13 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  late LoginUseCase _loginUseCase;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _loginUseCase = LoginUseCase(AuthRepositoryImplementation());
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,8 +84,19 @@ class _SignInScreenState extends State<SignInScreen> {
           ),
           const SizedBox(height: 32,),
           InkWell(
-            onTap: (){
-              signIn(emailController.text,passwordController.text,context);
+            onTap: ()async{
+              final result = await _loginUseCase.loginUseCase(emailController.text, passwordController.text);
+              if(result ==null){
+                print("Error");
+              }else{
+                print(result.user?.uid);
+                // ignore: use_build_context_synchronously
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (builder)=>HomePageScreen()),
+                      (route) => false,
+                );
+              }
             },
             child: Container(
               padding: EdgeInsets.symmetric(vertical: 16),
@@ -100,28 +120,5 @@ class _SignInScreenState extends State<SignInScreen> {
       ),
     );
   }
-  void signIn(String mail,String password, BuildContext context)async{
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: mail,
-          password: password
-      ).then((value) {
-        print("logged in ${value.user?.uid}");
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder:(co)=>HomePageScreen()),
-              (route)=>false,
-        );
-      });
 
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
-      }else{
-        print(e.message);
-      }
-    }
-  }
 }
