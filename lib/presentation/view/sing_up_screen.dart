@@ -1,15 +1,40 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:nobel/data/models/user_model.dart';
+import 'package:nobel/data/repository_implementation/auth_repository_implementation.dart';
+import 'package:nobel/domain/usecase/create_profile_usecase.dart';
+import 'package:nobel/domain/usecase/signup_usecase.dart';
 import 'package:nobel/presentation/component/custom_password_text_filed.dart';
 import 'package:nobel/presentation/component/custom_text_field.dart';
 import 'package:nobel/presentation/view/home_page_screen.dart';
 
-class SignUpScreen extends StatelessWidget{
+class SignUpScreen extends StatefulWidget{
+  @override
+  State<SignUpScreen> createState() => _SignUpScreenState();
+}
+
+class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController nameController = TextEditingController();
+
   TextEditingController emailController = TextEditingController();
+
   TextEditingController phoneController = TextEditingController();
+
   TextEditingController passwordController = TextEditingController();
+  // initialize repo impl
+  final  _authRepositoryImplementation = AuthRepositoryImplementation();
+  // declare use cases
+  late SignupUseCase _signupUseCase;
+  late CreateProfileUseCase _createProfileUseCase;
+  @override
+  initState(){
+    super.initState();
+    // initialize use cases
+    _signupUseCase = SignupUseCase(repoImpl: _authRepositoryImplementation);
+    _createProfileUseCase = CreateProfileUseCase(repoImpl: _authRepositoryImplementation);
+  }
+
   @override
   Widget build (BuildContext context){
     return  WillPopScope(
@@ -17,6 +42,7 @@ class SignUpScreen extends StatelessWidget{
         return Future.value(false);
       },
       child: Scaffold(
+        backgroundColor: Colors.white,
         body: SingleChildScrollView(
           padding:  const EdgeInsets.all(16),
           child: Column(
@@ -72,8 +98,30 @@ class SignUpScreen extends StatelessWidget{
                 style:ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.red),
                 ) ,
-                onPressed:(){
-                  register(context,emailController.text, passwordController.text);
+                onPressed:()async{
+                  final userCredentialResult = await _signupUseCase.signupUseCase(emailController.text, passwordController.text);
+                  if(userCredentialResult ==null){
+                    print("error");
+                  }else{
+                    print(userCredentialResult.user?.uid);
+                    final createProfileResult = await _createProfileUseCase.createProfileUseCase(
+                        UserModel(
+                          name: nameController.text,
+                          phone: phoneController.text,
+                          email: emailController.text,
+                          id: userCredentialResult.user?.uid
+                        ),
+                    );
+                    if(createProfileResult == true){
+                      // ignore: use_build_context_synchronously
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (builder)=>HomePageScreen()),
+                            (route) => false,
+                      );
+                    }
+                  }
+                  // register(context,emailController.text, passwordController.text);
                 },
                 child: const Center(
                     child: Text("Register",
@@ -90,6 +138,7 @@ class SignUpScreen extends StatelessWidget{
       ),
     );
   }
+
   void register(BuildContext context,String userEmail , String userPassword)async{
     await FirebaseAuth.instance.createUserWithEmailAndPassword(
       email: userEmail,
