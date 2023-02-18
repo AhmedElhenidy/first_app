@@ -37,6 +37,7 @@ class AllCategoriesScreen extends StatelessWidget {
                   MaterialPageRoute(
                     builder: (builder)=>CategoryProductsScreen(
                       catName: categoriesList[index].name,
+                      catId: categoriesList[index].id,
                     ),
                   ));
             },

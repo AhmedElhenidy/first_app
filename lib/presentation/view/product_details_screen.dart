@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nobel/models/product_model.dart';
+import 'package:nobel/presentation/PLoH/favourite_cubit/favourite_cubit.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
    const ProductDetailsScreen({required this.product,Key? key}) : super(key: key);
@@ -32,9 +34,29 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   }
   void toggleFavourite(){
     _isFavourite=!_isFavourite;
+    if(_isFavourite){
+      BlocProvider.of<FavouriteCubit>(context).
+      addToFavourite(widget.product);
+    }else{
+      BlocProvider.of<FavouriteCubit>(context).
+      removeFromFavourite(widget.product);
+    }
     setState(() {
 
     });
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if(BlocProvider.of<FavouriteCubit>(context).
+    favouriteProducts.any((element)=>element.id==widget.product.id)){
+      _isFavourite = true;
+      if(mounted){
+        setState(() {
+        });
+      }
+    }
   }
   @override
   Widget build(BuildContext context) {

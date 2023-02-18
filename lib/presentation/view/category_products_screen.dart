@@ -4,8 +4,9 @@ import 'package:nobel/models/product_model.dart';
 import 'package:nobel/presentation/view/product_details_screen.dart';
 
 class CategoryProductsScreen extends StatelessWidget {
+  final num catId;
   final String catName;
-  const CategoryProductsScreen({required this.catName,Key? key}) : super(key: key);
+  const CategoryProductsScreen({required this.catId,required this.catName,Key? key}) : super(key: key);
   final Color redColor = const Color(0xffA71E27);
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,7 @@ class CategoryProductsScreen extends StatelessWidget {
       ),
       body: FutureBuilder<QuerySnapshot<Map<String,dynamic>>>(
         future: FirebaseFirestore.instance.collection("products")
-            .where("category",isEqualTo:catName ).get(),
+            .where("cat_id",isEqualTo:catId ).get(),
         builder: (context,connection){
           switch(connection.connectionState){
             case ConnectionState.none:
@@ -38,6 +39,7 @@ class CategoryProductsScreen extends StatelessWidget {
                           image: "${element['productImage']}",
                           price: "${element['price']}",
                           category: "${element['category']}",
+                        id: element['id']
                       ),
                   );
                 });

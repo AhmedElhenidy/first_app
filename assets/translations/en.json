@@ -4,5 +4,8 @@
   "password": "Password",
   "don't_have_account": "Don't have account?",
   "singUp": "Sign Up",
-  "login": "Login"
+  "login": "Login",
+  "home_page":"Home Page",
+  "categories": "Categories",
+  "see_all": "see all"
 }
