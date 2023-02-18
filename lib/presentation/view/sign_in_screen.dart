@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nobel/domain/usecase/login_usecase.dart';
 import 'package:nobel/presentation/component/custom_password_text_filed.dart';
@@ -30,7 +31,8 @@ class _SignInScreenState extends State<SignInScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("Sign In",
+        title:  Text(
+          "signIn".tr(),
           style: TextStyle(
             color: Colors.black,
             fontSize: 22,
@@ -39,6 +41,18 @@ class _SignInScreenState extends State<SignInScreen> {
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.white,
+        actions: [
+          InkWell(
+            onTap: (){
+              if(context.locale.languageCode=="en"){
+                context.setLocale(Locale("ar"));
+              }else{
+                context.setLocale(Locale("en"));
+              }
+            },
+            child: Icon(Icons.language_rounded,color: Colors.blue,),
+          )
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 64),
@@ -56,7 +70,7 @@ class _SignInScreenState extends State<SignInScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
            children:  [
-             const Text("don't have account?\t",
+              Text("don't_have_account".tr(),
                style: TextStyle(
                    fontSize: 22,
                    color: Colors.black,
@@ -72,7 +86,7 @@ class _SignInScreenState extends State<SignInScreen> {
                      ),
                  );
                },
-               child: const Text("sign up",
+               child:  Text("singUp".tr(),
                 style: TextStyle(
                   fontSize: 22,
                   color: Colors.red,
@@ -104,9 +118,9 @@ class _SignInScreenState extends State<SignInScreen> {
                 color: Colors.red,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Center(
+              child:  Center(
                 child: Text(
-                  "Login",
+                  "login".tr(),
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
